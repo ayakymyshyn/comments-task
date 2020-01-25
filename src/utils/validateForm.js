@@ -1,36 +1,28 @@
-import { store } from "react-notifications-component";
+import { addNotification } from "./addNotification";
 
 export const validateForm = (name, email, text, cb, args) => {
   const errors = [];
+
+  // validate email field
   !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
     errors.push("You've entered invalid e-mail adress!");
+
+  // validate name field
   (name.length < 3 || !/^[A-Za-z]+$/.test(name)) &&
-    errors.push("Name must contain min. 3 characters and include letters only!");
+    errors.push(
+      "Name must contain min. 3 characters and include letters only!"
+    );
+
+  // validate text field
   text.length < 2 && errors.push("Text must contain min. 2 characters!");
+
+  // add notifications and call callback if there is no errors
   errors.length > 0
     ? errors.forEach(error => {
-        store.addNotification({
-          title: "Error!",
-          message: error,
-          type: "danger",
-          insert: "top",
-          container: "top-right",
-          dismiss: {
-            duration: 3000,
-            onScreen: false
-          }
-        });
+        addNotification("danger", error, "Error!");
       })
-    : store.addNotification({
-        title: "Success",
-        message: "Comment has been added",
-        type: "success",
-        insert: "top",
-        container: "top-right",
-        dismiss: {
-          duration: 3000,
-          onScreen: false
-        }
-      }) && cb(args);
+    : addNotification("success", "Comment has been added", "Success!") &&
+      cb(args);
+
   return errors;
 };

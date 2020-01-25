@@ -1,5 +1,6 @@
 import { store } from "react-notifications-component";
 
+// to make code more readable I've created separate function for creating notifications
 export const addNotification = (
   type = "success",
   message,
@@ -18,4 +19,5 @@ export const addNotification = (
     },
     ...params
   });
+  return true;
 };
