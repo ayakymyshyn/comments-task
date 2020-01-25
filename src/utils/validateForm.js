@@ -1,11 +1,11 @@
 import { store } from "react-notifications-component";
-import { checkExistingAndCb } from "./checkExisting";
 
 export const validateForm = (name, email, text, cb, args) => {
   const errors = [];
   !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
     errors.push("You've entered invalid e-mail adress!");
-  name.length < 3 && errors.push("Name must contain min. 3 characters!");
+  (name.length < 3 || !/^[A-Za-z]+$/.test(name)) &&
+    errors.push("Name must contain min. 3 characters and include letters only!");
   text.length < 2 && errors.push("Text must contain min. 2 characters!");
   errors.length > 0
     ? errors.forEach(error => {

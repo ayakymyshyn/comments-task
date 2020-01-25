@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { addToFavorites } from "../../redux/actions/addToFavorites";
 import { removeFromFavorites } from "../../redux/actions/removeFromFavorites";
 import { checkExistingAndCb } from "../../utils/checkExisting";
-import { store } from "react-notifications-component";
+import { addNotification } from "../../utils/addNotification";
 
 import {
   CommentCard,
@@ -18,40 +18,36 @@ const Comment = ({
   addToFavorites,
   removeFromFavorites,
   favorites
-}) => (
-  <CommentCard>
-    <Email>{comment.email}</Email>
-    <AuthorName>{comment.name}</AuthorName>
-    <CommentText>{`${comment.body.substring(0, 20)}...`}</CommentText>
-    <AddToFavoriteButton
-      onClick={() => {
-        comment.isFavorite
-          ? removeFromFavorites(comment.id)
-          : checkExistingAndCb(favorites, comment.id, addToFavorites, {
-              ...comment,
-              isFavorite: true
-            });
-        store.addNotification({
-          title: "Success!",
-          message: `${
-            comment.isFavorite
-              ? "Comment have been removed"
-              : "Comment added to favorites"
-          }`,
-          type: "success",
-          insert: "top",
-          container: "top-right",
-          dismiss: {
-            duration: 3000,
-            onScreen: false
-          }
+}) => {
+  const notificationMessage = comment.isFavorite
+    ? "Comment has been removed"
+    : "Comment added to favorites";
+
+  const addOrRemoveComment = () => {
+    comment.isFavorite
+      ? removeFromFavorites(comment.id)
+      : checkExistingAndCb(favorites, comment.id, addToFavorites, {
+          ...comment,
+          isFavorite: true
         });
-      }}
-    >
-      {comment.isFavorite ? "Remove from favorites" : "Add to favorites"}
-    </AddToFavoriteButton>
-  </CommentCard>
-);
+  };
+
+  return (
+    <CommentCard>
+      <Email>{comment.email}</Email>
+      <AuthorName>{comment.name}</AuthorName>
+      <CommentText>{`${comment.body.substring(0, 20)}...`}</CommentText>
+      <AddToFavoriteButton
+        onClick={() => {
+          addOrRemoveComment();
+          addNotification("success", notificationMessage, "Success!");
+        }}
+      >
+        {comment.isFavorite ? "Remove from favorites" : "Add to favorites"}
+      </AddToFavoriteButton>
+    </CommentCard>  
+  );
+};
 
 const mapStateToProps = state => ({
   favorites: state.commentsReducer.favorites

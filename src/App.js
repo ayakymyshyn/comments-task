@@ -15,7 +15,7 @@ import "./App.css";
 const App = ({ favorites, getComments, comments }) => {
   useEffect(() => {
     getComments();
-  }, []);
+  }, [getComments]);
 
   return (
     <Router>
